@@ -1,0 +1,26 @@
+{
+    "name": "dioscouri/f3-affiliates",
+    "type": "component",
+    "description": "Affiliate tracking for the F3-framework",
+    "keywords": ["F3","RAD", "affiliates"],
+    "homepage": "https://github.com/dioscouri/f3-affiliates",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Rafael Diaz-Tushman",
+            "email": "rdiaztushman@dioscouri.com",
+            "homepage": "http://dioscouri.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "dioscouri/f3-lib": "dev-master",
+        "dioscouri/f3-admin": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Affiliates": "src/"
+        }
+    }    
+}
