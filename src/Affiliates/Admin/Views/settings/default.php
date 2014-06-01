@@ -27,9 +27,16 @@
 
                 <div class="tab-pane fade in active" id="tab-general">
 
-                    <h3 class="">General Settings</h3>
+                    <h4>General Settings</h4>
+                    
+                    <hr />
+                    
+                    <div class="form-group">
+                        <label>Default Message</label>
+                        <textarea name="general[default_message]" class="form-control" rows="10"><?php echo $flash->old('general.default_message'); ?></textarea>                        
+                    </div>
+                    <!-- /.form-group -->                    
 
-                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec.</p>
                 </div>
                 
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>

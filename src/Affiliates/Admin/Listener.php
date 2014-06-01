@@ -13,24 +13,29 @@ class Listener extends \Prefab
             
             $pages->insert(array(
                 'type' => 'admin.nav',
-                'priority' => 40,
+                'priority' => 30,
                 'title' => 'Affiliates',
-                'icon' => 'fa fa-file-text',
+                'icon' => 'fa fa-share-alt',
                 'is_root' => false,
                 'tree' => $root,
-                'base' => '/admin/pages'
+                'base' => '/admin/affiliates'
             ));
             
             $children = array(
                 array(
-                    'title' => 'Affiliates',
-                    'route' => './admin/pages/pages',
-                    'icon' => 'fa fa-list'
+                    'title' => 'Dashboard',
+                    'route' => './admin/affiliates',
+                    'icon' => 'fa fa-share-alt'
                 ),
                 array(
-                    'title' => 'Categories',
-                    'route' => './admin/pages/categories',
-                    'icon' => 'fa fa-folder'
+                    'title' => 'Campaigns',
+                    'route' => './admin/affiliates/campaigns',
+                    'icon' => 'fa fa-bullhorn'
+                ),
+                array(
+                    'title' => 'Settings',
+                    'route' => './admin/affiliates/settings',
+                    'icon' => 'fa fa-cogs'
                 )
             );
             
@@ -38,23 +43,5 @@ class Listener extends \Prefab
             
             \Dsc\System::instance()->addMessage('Affiliates added its admin menu items.');
         }
-    }
-
-    public function onAdminNavigationGetQuickAddItems($event)
-    {
-        $items = $event->getArgument('items');
-        $tree = $event->getArgument('tree');
-        
-        $item = new \stdClass();
-        $item->title = 'Affiliates';
-        $item->form = \Affiliates\Admin\Controllers\MenuItemQuickAdd::instance()->page($event);
-        $items[] = $item;
-        
-        $item = new \stdClass();
-        $item->title = 'Affiliates Category';
-        $item->form = \Affiliates\Admin\Controllers\MenuItemQuickAdd::instance()->category($event);
-        $items[] = $item;
-        
-        $event->setArgument('items', $items);
     }
 }
