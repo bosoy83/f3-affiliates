@@ -19,6 +19,10 @@ class Routes extends \Dsc\Routes\Group
         	$f3->reroute('/sign-in');
         });
         
+        $f3->route('GET /affiliate/share/thanks', function($f3){
+            echo "Thanks!";
+        });
+        
         $this->add( '/dashboard', 'GET', array(
             'controller' => 'Dashboard',
             'action' => 'index' 

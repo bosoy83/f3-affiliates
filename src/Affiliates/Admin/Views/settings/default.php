@@ -13,6 +13,9 @@
                 <li class="active">
                     <a href="#tab-general" data-toggle="tab"> General Settings </a>
                 </li>
+                <li>
+                    <a href="#tab-social" data-toggle="tab"> Social Sharing Options </a>
+                </li>                
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -36,6 +39,12 @@
                         <textarea name="general[default_message]" class="form-control" rows="10"><?php echo $flash->old('general.default_message'); ?></textarea>                        
                     </div>
                     <!-- /.form-group -->                    
+
+                </div>
+                
+                <div class="tab-pane fade in" id="tab-social">
+                
+                    <?php echo $this->renderLayout('Affiliates/Admin/Views::settings/social.php'); ?>
 
                 </div>
                 

@@ -43,6 +43,8 @@
                     <textarea rows="10" required class="form-control" name="message"><?php echo $this->flash->old('message'); ?></textarea>
                 </div>
                 
+                <p class="help-block"><b>Note:</b> We will automatically add your affiliate URL to the bottom of the invitation.</p>
+                
                 <div class="form-group">
                     <button class="btn btn-lg btn-primary" type="submit">Send</button>
                     <a class="btn btn-link" href="./affiliate/invite-friends">Cancel</a>
