@@ -122,7 +122,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         // or is there an affiliate ID in a cookie and the user IS logged in
         elseif (!empty($identity->id) && !empty($cookie_affiliate_id))
         {
-            // TODO Make the user into a referral for affiliate_id and kill the cookie
+            // Make the user into a referral for affiliate_id and kill the cookie
             // \Dsc\System::addMessage('Making you into a referral for an Affiliate ID');
             try
             {
@@ -217,7 +217,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         // or is there an affiliate ID in a cookie and the user IS logged in
         elseif (!empty($identity->id) && !empty($cookie_invite_id))
         {
-            // TODO Make the user into a referral for invite_id and kill the cookie
+            // Make the user into a referral for invite_id and kill the cookie
             // \Dsc\System::addMessage('Making you into a referral for an Invite ID');
             try
             {

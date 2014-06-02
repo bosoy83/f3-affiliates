@@ -118,4 +118,13 @@ class Invite extends \Dsc\Controller
         
         $this->app->reroute('/affiliate/invite-friends/email');
     }
+    
+    public function link()
+    {
+        $settings = \Affiliates\Models\Settings::fetch();
+    
+        $this->app->set('meta.title', 'Share your personal link | Affiliates');
+         
+        echo $this->theme->renderTheme('Affiliates/Site/Views::invite/link.php');
+    }
 }
