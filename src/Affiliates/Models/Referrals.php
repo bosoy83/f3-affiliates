@@ -400,7 +400,37 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
      */
     public static function calcAffiliateTotals( $affiliate_id ) 
     {
-    	
+        $user = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$affiliate_id)));
+        if (!empty($user->id)) 
+        {
+            // get the referrals count and put it in the users object
+            $referrals_count = (new static)->collection()->count( array(
+                'affiliate_id' => new \MongoId( (string) $affiliate_id )
+            ));
+             
+            // get the invitations count and put it in the users object
+            $invites_count = (new \Affiliates\Models\Invites)->collection()->count( array(
+                'affiliate_id' => new \MongoId( (string) $affiliate_id )
+            ));
+            
+            // get the invited-but-not-joined count and put it in the users object
+            $invites_not_joined_count = (new \Affiliates\Models\Invites)->collection()->count( array(
+                'affiliate_id' => new \MongoId( (string) $affiliate_id ),
+                'status' => 'invited'
+            ));
+            
+            $user->{'affiliate.referrals_count'} = $referrals_count;
+            $user->{'affiliate.invites_count'} = $invites_count;
+            $user->{'affiliate.invites_not_joined_count'} = $invites_not_joined_count;
+            
+            try {
+                $user->save();
+            } 
+            catch (\Exception $e) {
+                $user->log( (string) $e, 'ERROR', __CLASS__.'::'.__FUNCTION__);
+            }
+            
+        }
     }
     
     /**

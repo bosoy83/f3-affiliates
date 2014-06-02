@@ -58,6 +58,8 @@ class Invites extends \Dsc\Mongo\Collections\Nodes
         {
         	$this->sendEmailNewInvite();
         }
+        
+        \Affiliates\Models\Referrals::calcAffiliateTotals( $this->affiliate_id );
     }
     
     /**

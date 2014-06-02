@@ -1,6 +1,7 @@
 <?php $link = $SCHEME . '://' . $HOST . $BASE . '/affiliate/' . $this->auth->getIdentity()->id; ?>
 <?php $settings = \Affiliates\Models\Settings::fetch(); ?>
 <?php $encoded_link = urlencode($link); ?>
+<?php $identity = $this->auth->getIdentity()->reload(); ?>
             
 <div class="container">
     <ol class="breadcrumb">
@@ -11,7 +12,7 @@
     </ol>
     
     <h2>
-        <small>Hello, <?php echo $this->auth->getIdentity()->username; ?><br/></small>
+        <small>Hello, <?php echo $identity->username; ?><br/></small>
         Your Affiliate Account
         <a href="./affiliate/invite-friends" class="btn btn-primary pull-right">Invite Friends</a>
     </h2>
@@ -26,13 +27,13 @@
     
     <div class="row">
         <div class="col-md-4">
-            <div class="well well-sm well-light text-center"><h5>Referrals:<br/><?php echo 0; ?></h5></div>
+            <div class="well well-sm well-light text-center"><h5>Referrals:<br/><?php echo (int) $identity->{'affiliate.referrals_count'}; ?></h5></div>
         </div>
         <div class="col-md-4">
-            <div class="well well-sm well-light text-center"><h5>Invitations Sent:<br/><?php echo 0; ?></h5></div>
+            <div class="well well-sm well-light text-center"><h5>Invitations Sent:<br/><?php echo (int) $identity->{'affiliate.invites_count'}; ?></h5></div>
         </div>
         <div class="col-md-4">
-            <div class="well well-sm well-light text-center"><h5>Invites who haven't joined:<br/><?php echo 0; ?></h5></div>
+            <div class="well well-sm well-light text-center"><h5>Invites who haven't joined:<br/><?php echo (int) $identity->{'affiliate.invites_not_joined_count'}; ?></h5></div>
         </div>
     </div>
     
