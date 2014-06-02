@@ -1,6 +1,9 @@
 <div class="container">
     <ol class="breadcrumb">
         <li>
+            <a href="./user">My Account</a>
+        </li>    
+        <li>
             <a href="./affiliate/dashboard">My Affiliate Account</a>
         </li>
         <li>

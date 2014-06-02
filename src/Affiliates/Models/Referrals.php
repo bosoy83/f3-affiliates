@@ -381,7 +381,26 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             $this->sendEmailNewReferral();
         }
         
+        $this->calcAffiliateTotals( $this->affiliate_id );
+        
         parent::afterCreate();
+    }
+    
+    protected function afterDelete()
+    {
+        $this->calcAffiliateTotals( $this->affiliate_id );
+        
+        parent::afterDelete();
+    }
+    
+    /**
+     * A complete recount, not just incremental 
+     * 
+     * @param unknown $affiliate_id
+     */
+    public static function calcAffiliateTotals( $affiliate_id ) 
+    {
+    	
     }
     
     /**

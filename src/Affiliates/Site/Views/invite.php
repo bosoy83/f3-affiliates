@@ -1,6 +1,9 @@
 <div class="container">
     <ol class="breadcrumb">
         <li>
+            <a href="./user">My Account</a>
+        </li>    
+        <li>
             <a href="./affiliate/dashboard">My Affiliate Account</a>
         </li>
         <li class="active">Invite Friends</li>
@@ -8,6 +11,7 @@
     
     <h3>
         Invite friends
+        <a class="btn btn-link pull-right" href="./affiliate/dashboard"><i class="fa fa-chevron-left"></i> Back</a>
     </h3>
     
     <hr/>
@@ -23,8 +27,6 @@
     } elseif (($left && !$right) || ($right && !$left)) {
     	$width = '8';
     }
-    
-    $settings = \Affiliates\Models\Settings::fetch();
     ?>
         
     <div class="row">
@@ -38,6 +40,7 @@
             <div class="well well-sm"><?php echo $link = $SCHEME . '://' . $HOST . $BASE . '/affiliate/' . $this->auth->getIdentity()->id; ?></div>
             
             <?php $encoded_link = urlencode($link); ?>
+            <?php $settings = \Affiliates\Models\Settings::fetch(); ?>
             <ul class="list-group">
                 <li class="list-group-item">
                     <a class="btn btn-default" href="./affiliate/invite-friends/email"><i class="fa fa-envelope"></i> <span>Send an email</span></a>
