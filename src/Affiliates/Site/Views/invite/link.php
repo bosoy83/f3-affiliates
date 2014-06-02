@@ -14,6 +14,7 @@
     
     <h3>
         Share your affiliate URL
+        <a class="btn btn-link pull-right" href="./affiliate/invite-friends"><i class="fa fa-chevron-left"></i> Back</a>
     </h3>
     
     <hr/>
@@ -34,7 +35,5 @@
             </ol>      
         </div>        
     </div>
-    
-    <a class="btn btn-link" href="./affiliate/invite-friends"><i class="fa fa-chevron-left"></i> Back</a>
     
 </div>
