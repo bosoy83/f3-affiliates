@@ -23,7 +23,6 @@
                     <select name="social[providers][Facebook][enabled]" class="form-control">
                     	<?php  echo \Dsc\Html\Select::options( $opts, $flash->old('social.providers.Facebook.enabled') ); ?>
                     </select>
-                
                 </div>
                 <!-- /.form-group -->
 
@@ -56,19 +55,12 @@
                     <select name="social[providers][Twitter][enabled]" class="form-control">
                     	<?php  echo \Dsc\Html\Select::options( $opts, $flash->old('social.providers.Twitter.enabled') ); ?>
                     </select>
+                </div>
+                <!-- /.form-group -->
                 
-                </div>
-                <!-- /.form-group -->
-
                 <div class="form-group">
-                    <label>App ID</label>
-                    <input type="text" name="social[providers][Twitter][keys][key]" placeholder="App ID" value="<?php echo $flash->old('social.providers.Twitter.keys.key'); ?>" class="form-control" />
-                </div>
-                <!-- /.form-group -->
-
-                <div class="form-group">
-                    <label>App Secret</label>
-                    <input type="text" name="social[providers][Twitter][keys][secret]" placeholder="App Secret" value="<?php echo $flash->old('social.providers.Twitter.keys.secret'); ?>" class="form-control" />
+                    <label>Default Message</label>
+                    <textarea name="social[providers][Twitter][default_message]" class="form-control" rows="10"><?php echo $flash->old('social.providers.Twitter.default_message'); ?></textarea>                        
                 </div>
                 <!-- /.form-group -->
 
@@ -95,7 +87,6 @@
                     <select name="social[providers][Google][enabled]" class="form-control">
                     	<?php  echo \Dsc\Html\Select::options( $opts, $flash->old('social.providers.Google.enabled') ); ?>
                     </select>
-                
                 </div>
                 <!-- /.form-group -->
 
@@ -105,6 +96,8 @@
         </div>
         <!-- /.row -->
 
+        <hr/>
+        
         <div class="row">
             <div class="col-md-2">
 
@@ -120,7 +113,18 @@
                     <select name="social[providers][LinkedIn][enabled]" class="form-control">
                     	<?php  echo \Dsc\Html\Select::options( $opts, $flash->old('social.providers.LinkedIn.enabled') ); ?>
                     </select>
+                </div>
+                <!-- /.form-group -->
                 
+                <div class="form-group">
+                    <label>Default Title</label>
+                    <input type="text" class="form-control" name="social[providers][LinkedIn][default_title]" value="<?php echo $flash->old('social.providers.LinkedIn.default_title'); ?>" />                        
+                </div>
+                <!-- /.form-group -->
+                
+                <div class="form-group">
+                    <label>Default Message</label>
+                    <textarea name="social[providers][LinkedIn][default_message]" class="form-control" rows="10"><?php echo $flash->old('social.providers.LinkedIn.default_message'); ?></textarea>                        
                 </div>
                 <!-- /.form-group -->
 

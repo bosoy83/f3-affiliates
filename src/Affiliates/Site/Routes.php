@@ -15,8 +15,15 @@ class Routes extends \Dsc\Routes\Group
         $f3->route('GET /affiliate/@affiliate_id', function($f3){
         	\Dsc\System::instance()->get('input')->set('affiliate_id', $f3->get('PARAMS.affiliate_id'));
         	\Affiliates\Models\Referrals::handle();
-        	\Dsc\System::addMessage('Please sign in or register so we can complete the referral. Thanks!');
-        	$f3->reroute('/sign-in');
+        	\Dsc\System::addMessage('Please sign in or register with us so we can complete the referral. Thanks!');
+        	$f3->reroute('/');
+        });
+        
+        $f3->route('GET /invite/@invite_id', function($f3){
+            \Dsc\System::instance()->get('input')->set('invite_id', $f3->get('PARAMS.invite_id'));
+            \Affiliates\Models\Referrals::handle();
+            \Dsc\System::addMessage('Please sign in or register with us so we can complete the referral. Thanks!');
+            $f3->reroute('/');
         });
         
         $f3->route('GET /affiliate/share/thanks', function($f3){

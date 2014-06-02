@@ -1,4 +1,4 @@
-<?php $link = $SCHEME . '://' . $HOST . $BASE . '/sign-in?invite_id=' . $invite->id; ?>
+<?php $link = $SCHEME . '://' . $HOST . $BASE . '/invite/' . $invite->id; ?>
 
 <h3><?php echo $invite->sender_name; ?> has sent you an invitation.</h3>
 
