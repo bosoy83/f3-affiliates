@@ -82,17 +82,24 @@ class Invite extends \Dsc\Controller
 
             foreach ($data['recipients'] as $key=>$recipient) 
             {
-            	(new \Affiliates\Models\Invites)->bind(array(
-            	    'affiliate_id' => $this->getIdentity()->id,
-            		'sender_email' => $data['sender_email'],
-            	    'sender_name' => $data['sender_name'],
-            	    'recipient_email' => $recipient,
-            	    'message' => $data['message'],
-            	))->set('__send_email', true)->save();
-            	
-            	unset($data['recipients'][$key]);
-            	
-            	\Dsc\System::addMessage( 'Invitation sent to ' . $recipient, 'success' );
+                try {
+                    (new \Affiliates\Models\Invites)->bind(array(
+                        'affiliate_id' => $this->getIdentity()->id,
+                        'sender_email' => $data['sender_email'],
+                        'sender_name' => $data['sender_name'],
+                        'recipient_email' => $recipient,
+                        'message' => $data['message'],
+                    ))->set('__send_email', true)->save();
+                     
+                    unset($data['recipients'][$key]);
+                     
+                    \Dsc\System::addMessage( 'Invitation sent to ' . $recipient, 'success' );                	
+                }
+                catch (\Exception $e) 
+                {
+                    \Dsc\System::addMessage( 'Invitation not sent to ' . $recipient, 'warning' );
+                    \Dsc\System::addMessage( $e->getMessage(), 'warning' );
+                }
             }
         
         }

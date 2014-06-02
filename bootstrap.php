@@ -11,10 +11,8 @@ class AffiliatesBootstrap extends \Dsc\Bootstrap
         \Modules\Factory::registerPositions( array('left-invite-friend', 'right-invite-friend', 'above-invite-friend', 'below-invite-friend') );
     }
     
-    protected function runSite()
+    protected function postSite()
     {
-        parent::runSite();
-
         /**
          * Handle the affiliate tracking!
          */

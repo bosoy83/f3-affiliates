@@ -1,4 +1,4 @@
-<?php $link = $SCHEME . '://' . $HOST . $BASE . '/sign-in?affiliate_id=' . $invite->affiliate_id; ?>
+<?php $link = $SCHEME . '://' . $HOST . $BASE . '/sign-in?invite_id=' . $invite->id; ?>
 
 <?php echo $invite->sender_name; ?> has sent you an invitation. 
 
