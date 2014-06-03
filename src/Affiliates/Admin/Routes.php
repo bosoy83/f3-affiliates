@@ -11,5 +11,15 @@ class Routes extends \Dsc\Routes\Group
         ) );
         
         $this->addSettingsRoutes();
+        
+        $this->add( '', 'GET', array(
+            'controller' => 'Dashboard',
+            'action' => 'index'
+        ) );
+        
+        $this->add( '/campaigns', 'GET', array(
+            'controller' => 'Campaigns',
+            'action' => 'index'
+        ) );
     }
 }

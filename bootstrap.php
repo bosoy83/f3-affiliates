@@ -18,6 +18,15 @@ class AffiliatesBootstrap extends \Dsc\Bootstrap
             'above-affiliate-dashboard',
             'right-affiliate-dashboard',
         ));
+        
+        \Dsc\System::instance()->getDispatcher()->addListener(\Affiliates\Listeners\Shop::instance());
+    }
+    
+    protected function preSite()
+    {
+        parent::preSite();
+        
+        \Dsc\System::instance()->getDispatcher()->addListener(\Affiliates\Listeners\Shop::instance());
     }
 
     protected function postSite()

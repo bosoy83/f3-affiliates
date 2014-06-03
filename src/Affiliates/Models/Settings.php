@@ -32,6 +32,10 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         )
     );
     
+    public $shop = array(
+        'store_credit_per_referral' => null
+    );
+    
     public function isSocialProviderEnabled($provider=null)
     {
         $result = false;

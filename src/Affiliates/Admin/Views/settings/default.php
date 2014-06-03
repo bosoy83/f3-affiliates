@@ -25,7 +25,14 @@ jQuery(document).ready(function(){
                 </li>                
                 <li>
                     <a href="#tab-social" data-toggle="tab"> Social Sharing Options </a>
+                </li>
+                
+                <?php if (class_exists('\Shop\Models\Orders')) { ?>
+                <li>
+                    <a href="#tab-shop" data-toggle="tab"> Shop Settings </a>
                 </li>                
+                <?php } ?>
+                
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('tabs') as $key => $title ) { ?>
                 <li>
                     <a href="#tab-<?php echo $key; ?>" data-toggle="tab"> <?php echo $title; ?> </a>
@@ -63,6 +70,12 @@ jQuery(document).ready(function(){
                     <?php echo $this->renderLayout('Affiliates/Admin/Views::settings/social.php'); ?>
 
                 </div>
+                
+                <?php if (class_exists('\Shop\Models\Orders')) { ?>
+                <div class="tab-pane fade in" id="tab-shop">                
+                    <?php echo $this->renderLayout('Affiliates/Admin/Views::settings/shop.php'); ?>
+                </div>
+                <?php } ?>
                 
                 <?php if (!empty($this->event)) { foreach ((array) $this->event->getArgument('content') as $key => $content ) { ?>
                 <div class="tab-pane fade in" id="tab-<?php echo $key; ?>">
