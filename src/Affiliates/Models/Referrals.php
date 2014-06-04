@@ -365,6 +365,9 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
     
     protected function afterCreate()
     {
+        // create the commission
+        $this->createReferralCommission();
+        
         // Update invite if invite_id exists.  Mark it as converted.
         if (!empty($this->invite_id)) 
         {
@@ -451,5 +454,100 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         $this->__sendEmailNewReferral = \Dsc\System::instance()->get('mailer')->send($this->affiliate_email, $subject, array($html, $text) );
     
         return $this;
+    }
+    
+    /**
+     * Creates a commission for this referral, if applicable
+     * 
+     * @return \Affiliates\Models\Referrals
+     */
+    public function createReferralCommission()
+    {
+        $settings = \Affiliates\Models\Settings::fetch();
+        
+        if ($settings->{'commissions.for_referral'}) 
+        {
+            $auto_issue = (bool) $settings->{'commissions.auto_issue'};
+            
+            try {
+            	$commission = (new \Affiliates\Models\Commissions)->bind(array(
+            		'affiliate_id' => $this->affiliate_id,
+            	    'affiliate_name' => $this->affiliate()->fullName(),
+            	    'referral_id' => $this->id,
+            	    'referral_name' => $this->referral()->fullName(),
+            	    'type' => \Affiliates\Models\Commissions::TYPE_REFERRAL
+            	))->set('__issue', $auto_issue)->save();
+            }
+            catch (\Exception $e) {
+            	
+            }
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Does this referral trigger a conversion commission?
+     * 
+     * @return boolean
+     */
+    public function triggersConversionCommission() 
+    {
+    	$settings = \Affiliates\Models\Settings::fetch();
+    	if (!$settings->{'commissions.for_conversion'})
+    	{
+    		return false;
+    	}
+
+    	// How long does the affiliate earn conversion commissions?
+    	// does this affiliate still get to earn conversion commissions for this referral?
+    	    	
+    	$conversion_number = $settings->{'shop.conversion_number'};
+    	$conversion_period = $settings->{'shop.conversion_period'};
+    	
+    	if ($conversion_period == 'forever') 
+    	{
+    		return true;
+    	}
+    	
+    	if ($conversion_period == 'order') 
+    	{
+    	    // is the count of created commissions for this referral < the $conversion_number?    	    
+    	    $commissions_count = \Affiliates\Models\Commissions::collection()->count(array(
+    	    	'referral_id' => $this->id,
+    	        'type' => \Affiliates\Models\Commissions::TYPE_CONVERSION
+    	    ));
+    	    
+    	    // if so, $return = true;
+    	    if ($commissions_count < $conversion_number) 
+    	    {
+    	    	return true;
+    	    }
+    		
+    	}
+    	else 
+    	{
+    	    // $conversion_period == month | year
+    	    // $period_expiration_date = $referral_created_date + ($conversion_number $conversion_period)
+
+    	    $period_expiration_date = date( 'Y-m-d', strtotime( $this->{'metadata.created.local'} . "+ $conversion_number $conversion_period" ) );
+    	    if (date('Y-m-d') < $period_expiration_date) 
+    	    {
+    	    	return true;
+    	    }
+    	}
+    	
+    	return false;
+    }
+    
+    /**
+     * 
+     * @param unknown $shop_order_number
+     * @param unknown $shop_order_amount
+     * @return \Affiliates\Models\Referrals
+     */
+    public function createConversionCommission( $shop_order_number, $shop_order_amount )
+    {
+    	return $this;
     }
 }

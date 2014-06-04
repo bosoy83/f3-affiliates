@@ -1,15 +1,15 @@
 <?php 
 namespace Affiliates\Admin\Controllers;
 
-class Campaigns extends \Dsc\Controller 
+class Commissions extends \Dsc\Controller 
 {
     use \Dsc\Traits\Controllers\AdminList;
     
-    protected $list_route = '/admin/affiliates/campaigns';
+    protected $list_route = '/admin/affiliates/commissions';
     
     protected function getModel()
     {
-        $model = new \Affiliates\Models\Campaigns;
+        $model = new \Affiliates\Models\Commissions;
         return $model;
     }
     
@@ -22,8 +22,8 @@ class Campaigns extends \Dsc\Controller
         \Base::instance()->set('paginated', $paginated );
         \Base::instance()->set('selected', 'null' );
     
-        $this->app->set('meta.title', 'Campaigns | Affiliates');
+        $this->app->set('meta.title', 'Commissions | Affiliates');
     
-        echo $this->theme->render('Affiliates/Admin/Views::campaigns/list.php');
+        echo $this->theme->render('Affiliates/Admin/Views::commissions/list.php');
     }
 }

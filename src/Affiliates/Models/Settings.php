@@ -32,8 +32,18 @@ class Settings extends \Dsc\Mongo\Collections\Settings
         )
     );
     
+    public $commissions = array(
+        'auto_issue' => 1,
+        'for_referral' => 1,
+        'for_conversion' => 1,
+    );
+    
     public $shop = array(
-        'store_credit_per_referral' => null
+        'store_credit_per_referral' => null,
+        'store_credit_per_conversion' => null,
+        'store_credit_per_conversion_type' => 'flat-rate',
+        'conversion_number' => 1,
+        'conversion_period' => 'order'
     );
     
     public function isSocialProviderEnabled($provider=null)

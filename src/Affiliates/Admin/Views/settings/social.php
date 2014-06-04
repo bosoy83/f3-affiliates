@@ -21,7 +21,7 @@
                 <div class="form-group">
                     <label>Enabled?</label>
                     <select name="social[providers][Facebook][enabled]" class="form-control">
-                    	<?php  echo \Dsc\Html\Select::options( $opts, $flash->old('social.providers.Facebook.enabled') ); ?>
+                    	<?php echo \Dsc\Html\Select::options( $opts, $flash->old('social.providers.Facebook.enabled') ); ?>
                     </select>
                 </div>
                 <!-- /.form-group -->

@@ -2,7 +2,7 @@
 	<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
 		<h1 class="page-title txt-color-blueDark">
 			<i class="fa fa-table fa-fw "></i> 
-				Referrals 
+				Commissions 
 			<span> > 
 				List
 			</span>  
@@ -11,13 +11,13 @@
 	<div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
         <ul id="sparks" class="list-actions list-unstyled list-inline">
             <li>
-                <a class="btn btn-success" href="./admin/affiliates/referral/create">Add New</a>
+                <a class="btn btn-success" href="./admin/affiliates/commission/create">Add New</a>
             </li>        
         </ul>            	
 	</div>
 </div>
 
-<form method="post" action="./admin/affiliates/referrals">
+<form method="post" action="./admin/affiliates/commissions">
 
         <div class="row">
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8">
@@ -90,11 +90,17 @@
                 <ul class="list-group">
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-sm-9">
-                                <b>Referral</b>
+                            <div class="col-sm-2">
+                                <b>Date</b>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-6">
                                 <b>Affiliate</b>
+                            </div>
+                            <div class="col-sm-2">
+                                <b>Amount</b>
+                            </div>                            
+                            <div class="col-sm-2">
+                                <b>Status</b>
                             </div>
                         </div>
                     </li>
@@ -102,14 +108,19 @@
                 <?php foreach($paginated->items as $key=>$item) { ?>
                     <li class="list-group-item" data-id="<?php echo $item->id; ?>">
                         <div class="row">
-                            <div class="col-sm-9">
+                            <div class="col-sm-2">
+                                <?php echo date('Y-m-d g:ia', $item->{'metadata.created.time'} ); ?>
+                            </div>
+                            <div class="col-sm-6">
                                 <h5>
-                                    <?php echo $item->{'referral_name'}; ?>
-                                    <small><?php echo $item->referral_email; ?></small>
+                                    <?php echo $item->affiliate_name; ?>
                                 </h5>
                             </div>
-                            <div class="col-sm-3">
-                                <?php echo $item->affiliate_email; ?>
+                            <div class="col-sm-2">
+                                <?php echo $item->amount; ?>
+                            </div>
+                            <div class="col-sm-2">
+                                <?php echo $item->issued ? 'Issued' : 'Pending'; ?>
                             </div>
                         </div>
                     </li>

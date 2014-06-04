@@ -90,7 +90,10 @@
                 <ul class="list-group">
                     <li class="list-group-item">
                         <div class="row">
-                            <div class="col-sm-9">
+                            <div class="col-sm-2">
+                                <b>Date</b>
+                            </div>
+                            <div class="col-sm-7">
                                 <b>Referral</b>
                             </div>
                             <div class="col-sm-3">
@@ -102,7 +105,10 @@
                 <?php foreach($paginated->items as $key=>$item) { ?>
                     <li class="list-group-item" data-id="<?php echo $item->id; ?>">
                         <div class="row">
-                            <div class="col-sm-9">
+                            <div class="col-sm-2">
+                                <?php echo date('Y-m-d g:ia', $item->{'metadata.created.time'} ); ?>
+                            </div>
+                            <div class="col-sm-7">
                                 <h5>
                                     <?php echo $item->{'referral_name'}; ?>
                                     <small><?php echo $item->referral_email; ?></small>

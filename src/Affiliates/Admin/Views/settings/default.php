@@ -18,7 +18,10 @@ jQuery(document).ready(function(){
         <div class="col-md-3 col-sm-4">
             <ul class="nav nav-pills nav-stacked">
                 <li class="active">
-                    <a href="#tab-general" data-toggle="tab"> General Settings </a>
+                    <a href="#tab-commissions" data-toggle="tab"> Commissions Settings </a>
+                </li>            
+                <li>
+                    <a href="#tab-invitations" data-toggle="tab"> Invitations Settings </a>
                 </li>
                 <li>
                     <a href="#tab-dashboard" data-toggle="tab"> Dashboard Settings </a>
@@ -44,8 +47,55 @@ jQuery(document).ready(function(){
         <div class="col-md-9 col-sm-8">
 
             <div class="tab-content stacked-content">
-
-                <div class="tab-pane fade in active" id="tab-general">
+            
+                <div class="tab-pane fade in active" id="tab-commissions">
+                    
+                    <div class="form-group">
+                        <label>Automatically issue commissions when they are created?</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select name="commissions[auto_issue]" class="form-control">
+                                	<?php echo \Dsc\Html\Select::options( array(
+                            			array( 'value' => 0, 'text' => 'No' ),
+                                	    array( 'value' => 1, 'text' => 'Yes' ),
+                                	), $flash->old('commissions.auto_issue') ); ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.form-group -->
+                    
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">                    
+                                
+                                    <label>Commission earned for referral</label>
+                                    <select name="commissions[for_referral]" class="form-control">
+                                    	<?php echo \Dsc\Html\Select::options( array(
+                                			array( 'value' => 0, 'text' => 'No' ),
+                                    	    array( 'value' => 1, 'text' => 'Yes' ),
+                                    	), $flash->old('commissions.for_referral') ); ?>
+                                    </select>
+                                
+                            </div>
+                            <div class="col-md-6">                    
+                                
+                                    <label>Commission earned for conversion</label>
+                                    <select name="commissions[for_conversion]" class="form-control">
+                                    	<?php echo \Dsc\Html\Select::options( array(
+                                			array( 'value' => 0, 'text' => 'No' ),
+                                    	    array( 'value' => 1, 'text' => 'Yes' ),
+                                    	), $flash->old('commissions.for_conversion') ); ?>
+                                    </select>
+                                
+                            </div>                        
+                        </div>
+                    </div>
+                    <!-- /.form-group -->
+                                        
+                </div>
+            
+                <div class="tab-pane fade in" id="tab-invitations">
                     
                     <div class="form-group">
                         <label>Default message in invitation emails</label>

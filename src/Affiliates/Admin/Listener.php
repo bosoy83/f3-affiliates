@@ -33,6 +33,16 @@ class Listener extends \Prefab
                     'icon' => 'fa fa-bullhorn'
                 ),
                 array(
+                    'title' => 'Referrals',
+                    'route' => './admin/affiliates/referrals',
+                    'icon' => 'fa fa-puzzle-piece'
+                ),
+                array(
+                    'title' => 'Commissions',
+                    'route' => './admin/affiliates/commissions',
+                    'icon' => 'fa fa-money'
+                ),
+                array(
                     'title' => 'Settings',
                     'route' => './admin/affiliates/settings',
                     'icon' => 'fa fa-cogs'

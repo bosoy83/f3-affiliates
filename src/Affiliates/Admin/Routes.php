@@ -21,5 +21,8 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Campaigns',
             'action' => 'index'
         ) );
+        
+        $this->addCrudGroup( 'Referrals', 'Referral' );
+        $this->addCrudGroup( 'Commissions', 'Commission' );
     }
 }
