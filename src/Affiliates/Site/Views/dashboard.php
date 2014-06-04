@@ -21,7 +21,7 @@
     
     <div><?php echo $settings->{'dashboard_header'}; ?></div>
     
-    <div><h4>Your earnings: <?php echo \Shop\Models\Currency::format( 0 ); ?></h4></div>
+    <div><h4>Your earnings: <?php echo \Shop\Models\Currency::format( $identity->{'affiliate.commission.balance'} ); ?></h4></div>
     
     <tmpl type="modules" name="above-affiliate-dashboard" />
     
