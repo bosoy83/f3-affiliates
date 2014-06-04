@@ -86,6 +86,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             elseif (static::isUser($identity->id)) 
             {
                 $app->clear('COOKIE.affiliate_id');
+                $app->set('COOKIE.affiliate_id', null, -1);
             }
             
             // If the user IS logged in and is not a referral, make them into a referral for affiliate_id
@@ -102,10 +103,13 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                     ))->set('__send_email', true)->save();
                     
                     $app->clear('COOKIE.affiliate_id');
+                    $app->set('COOKIE.affiliate_id', null, -1);
                 }
                 catch (\Exception $e)
                 {
                     // TODO Log the failure in the system logger
+                    $app->clear('COOKIE.affiliate_id');
+                    $app->set('COOKIE.affiliate_id', null, -1);
                     return false;
                 }
             }
@@ -134,14 +138,20 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                 ))->set('__send_email', true)->save();
                 
                 $app->clear('COOKIE.affiliate_id');
+                $app->set('COOKIE.affiliate_id', null, -1);
             }
             catch (\Exception $e)
             {
                 // TODO Log the failure in the system logger
+                $app->clear('COOKIE.affiliate_id');
+                $app->set('COOKIE.affiliate_id', null, -1);                
                 return false;
             }
         }
-        
+
+        $app->clear('COOKIE.affiliate_id');
+        $app->set('COOKIE.affiliate_id', null, -1);
+                
         return true;
     }
     
