@@ -79,7 +79,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             // If the user is not logged in, set a cookie.
             if (empty($identity->id))
             {
-                $app->set('COOKIE.affiliate_id', $request_affiliate_id, 31536000); // == 1 year == (86400*365)
+                $app->set('COOKIE.affiliate_id', $request_affiliate_id, 2592000); // == 30 days == (86400*30)
             }
             
             // if the user IS logged in and is already a referral, just clear any cookies
@@ -120,7 +120,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         {
             // Extend the life of the cookie
             // \Dsc\System::addMessage('Extending the life of the cookie for the Affiliate ID');
-            $app->set('COOKIE.affiliate_id', $cookie_affiliate_id, 31536000); // == 1 year == (86400*365)
+            $app->set('COOKIE.affiliate_id', $cookie_affiliate_id, 2592000); // == 30 days == (86400*30)
         }
         
         // or is there an affiliate ID in a cookie and the user IS logged in
@@ -178,7 +178,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                 // Validate the $request_invite_id
                 if (\Affiliates\Models\Invites::idValid($request_invite_id)) 
                 {
-                    $app->set('COOKIE.invite_id', $request_invite_id, 31536000); // == 1 year == (86400*365)
+                    $app->set('COOKIE.invite_id', $request_invite_id, 2592000); // == 30 days == (86400*30)
                 }                
             }
     
@@ -221,7 +221,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         {
             // Extend the life of the cookie
             // \Dsc\System::addMessage('Extending the life of the cookie of the Invite ID');
-            $app->set('COOKIE.invite_id', $cookie_invite_id, 31536000); // == 1 year == (86400*365)
+            $app->set('COOKIE.invite_id', $cookie_invite_id, 2592000); // == 30 days == (86400*30)
         }
     
         // or is there an affiliate ID in a cookie and the user IS logged in
