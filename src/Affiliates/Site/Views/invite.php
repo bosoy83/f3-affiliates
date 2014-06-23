@@ -36,7 +36,7 @@
         </div>
         <?php } ?>
         <div class="col-md-<?php echo $width; ?>">
-            <h4>Your affiliate URL is: </h4>
+            <h4>Your referral URL is: </h4>
             <div class="well well-sm"><?php echo $link = $SCHEME . '://' . $HOST . $BASE . '/affiliate/' . $this->auth->getIdentity()->id; ?></div>
             
             <?php $encoded_link = urlencode($link); ?>

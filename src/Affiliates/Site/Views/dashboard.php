@@ -36,7 +36,7 @@
         </div>
     </div>
     
-    <h4>Your affiliate URL is: </h4>
+    <h4>Your referral URL is: </h4>
     <div class="well well-sm"><?php echo $link; ?></div>    
     
     <div class="row">
@@ -67,7 +67,7 @@
                     <textarea rows="10" required class="form-control" name="message"><?php echo $this->flash->old('message'); ?></textarea>
                 </div>
                 
-                <p class="help-block"><b>Note:</b> We will automatically add your affiliate URL to the bottom of the invitation.</p>
+                <p class="help-block"><b>Note:</b> We will automatically add your referral URL to the bottom of the invitation.</p>
                 
                 <div class="form-group">
                     <button class="btn btn-lg btn-primary" type="submit">Send</button>
