@@ -12,8 +12,7 @@
     </ol>
     
     <h2>
-        <small>Hello, <?php echo $identity->username; ?><br/></small>
-        Your Affiliate Account
+        Invite Friends, Earn Cash
         <a href="./affiliate/invite-friends" class="btn btn-primary pull-right">Invite Friends</a>
     </h2>
     
@@ -21,7 +20,7 @@
     
     <div><?php echo $settings->{'dashboard_header'}; ?></div>
     
-    <div><h4>Your earnings: <?php echo \Shop\Models\Currency::format( $identity->{'affiliate.commission.balance'} ); ?></h4></div>
+    <div><h4>Your total earnings from referrals: <?php echo \Shop\Models\Currency::format( $identity->{'affiliate.commission.balance'} ); ?></h4></div>
     
     <tmpl type="modules" name="above-affiliate-dashboard" />
     
@@ -37,7 +36,47 @@
         </div>
     </div>
     
+    <h4>Your affiliate URL is: </h4>
+    <div class="well well-sm"><?php echo $link; ?></div>    
+    
     <div class="row">
+    
+        <div class="col-md-4">
+        
+            <h4><a href="./affiliate/invite-friends/email">Send an email invitation:</a></h4>
+            
+            <form method="post" action="./affiliate/invite-friends/email">
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input class="form-control" name="sender_name" placeholder="Your Name" value="<?php echo $this->flash->old('sender_name'); ?>" type="text" required />
+                </div>
+                
+                <div class="form-group">
+                    <label>Your Email Address</label>
+                    <input class="form-control" name="sender_email" placeholder="Your Email Address" value="<?php echo $this->flash->old('sender_email'); ?>" type="email" required />
+                </div>
+        
+                <div class="form-group">
+                    <label>Recipient Email Addresses (10 max)</label>
+                    <input id="recipients" class="select2 form-control" data-maximum="10" name="recipients" placeholder="Recipient Email Addresses" value="<?php echo $this->flash->old('recipients'); ?>" />
+                    <p class="help-block">Separate multiple emails with commas</p>
+                </div>
+        
+                <div class="form-group">
+                    <label>Personal Message</label>
+                    <textarea rows="10" required class="form-control" name="message"><?php echo $this->flash->old('message'); ?></textarea>
+                </div>
+                
+                <p class="help-block"><b>Note:</b> We will automatically add your affiliate URL to the bottom of the invitation.</p>
+                
+                <div class="form-group">
+                    <button class="btn btn-lg btn-primary" type="submit">Send</button>
+                    <a class="btn btn-link" href="./affiliate/invite-friends">Cancel</a>
+                </div>
+            </form>            
+            
+        </div>
+        
         <div class="col-md-4">
         
             <h4><a href="./affiliate/invite-friends">Invite your friends:</a></h4>
@@ -83,11 +122,52 @@
                  
         </div>
         
-        <div class="col-md-8">
-            <h4>Your affiliate URL is: </h4>
-            <div class="well well-sm"><?php echo $link; ?></div>
+        <div class="col-md-4">
             
-            <tmpl type="modules" name="right-affiliate-dashboard" />
+            <h4>
+                <a href="./affiliate/invite-history">
+                Your last 10 invitations:
+                </a>
+            </h4>
+            
+            <?php if (!empty($invites)) { ?>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-5">
+                                Friend
+                            </div>
+                            <div class="col-md-4">
+                                Invited
+                            </div>              
+                            <div class="col-md-3">
+                                Status
+                            </div>              
+                        </div>
+                    </div>            
+                <?php foreach ($invites as $invite) { ?>
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <small><?php echo $invite->recipient_email; ?></small>
+                            </div>
+                            <div class="col-md-4">
+                                <small><?php echo date('Y-m-d', $invite->{'metadata.created.time'} ); ?></small>
+                            </div>              
+                            <div class="col-md-3">
+                                <small><?php echo $invite->status; ?></small>
+                            </div>              
+                        </div>
+                    </div>
+                <?php } ?>
+                </div>
+
+                <a href="./affiliate/invite-history" class="btn-btn-link pull-right">
+                    View All
+                </a>
+            <?php } else { ?>
+                <p>You have not sent any invites.</p>
+            <?php } ?>
             
         </div>        
         

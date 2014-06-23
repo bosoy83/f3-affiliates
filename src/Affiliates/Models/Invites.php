@@ -22,6 +22,20 @@ class Invites extends \Dsc\Mongo\Collections\Nodes
     protected function fetchConditions()
     {
         parent::fetchConditions();
+        
+        $filter_keyword = $this->getState('filter.keyword');
+        if ($filter_keyword&&is_string($filter_keyword))
+        {
+            $key = new \MongoRegex('/'.$filter_keyword.'/i');
+        
+            $where = array();
+        
+            $where[] = array(
+                'recipient_email' => $key
+            );
+        
+            $this->setCondition('$or', $where);
+        }        
     
         $filter_affiliate_id = $this->getState('filter.affiliate_id');
         if (strlen($filter_affiliate_id))

@@ -54,5 +54,15 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Invite',
             'action' => 'link'
         ) );
+        
+        $this->add( '/invite-history', 'GET|POST', array(
+            'controller' => 'Invites',
+            'action' => 'index'
+        ) );
+
+        $this->add( '/invite-history/page/@page', 'GET', array(
+            'controller' => 'Invites',
+            'action' => 'index'
+        ) );
     }
 }
