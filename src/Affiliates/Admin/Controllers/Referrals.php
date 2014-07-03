@@ -1,7 +1,7 @@
 <?php 
 namespace Affiliates\Admin\Controllers;
 
-class Referrals extends \Dsc\Controller 
+class Referrals extends \Admin\Controllers\BaseAuth 
 {
     use \Dsc\Traits\Controllers\AdminList;
     

@@ -1,7 +1,7 @@
 <?php 
 namespace Affiliates\Admin\Controllers;
 
-class Commissions extends \Dsc\Controller 
+class Commissions extends \Admin\Controllers\BaseAuth 
 {
     use \Dsc\Traits\Controllers\AdminList;
     

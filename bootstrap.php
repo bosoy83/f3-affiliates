@@ -27,6 +27,20 @@ class AffiliatesBootstrap extends \Dsc\Bootstrap
         parent::preSite();
         
         \Dsc\System::instance()->getDispatcher()->addListener(\Affiliates\Listeners\Shop::instance());
+        
+        if (class_exists('\Minify\Factory'))
+        {
+            \Minify\Factory::registerPath($this->dir . "/src/");
+        
+            $files = array(
+                'Affiliates/Assets/js/fingerprint.js',
+            );
+        
+            foreach ($files as $file)
+            {
+                \Minify\Factory::js($file);
+            }
+        }        
     }
 
     protected function postSite()

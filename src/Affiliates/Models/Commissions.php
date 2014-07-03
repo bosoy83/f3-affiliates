@@ -5,7 +5,8 @@ class Commissions extends \Dsc\Mongo\Collections\Nodes
 {
     public $affiliate_id = null;                // MongoId of affiliate.  affiliate_id = user_id
     public $affiliate_name = null;
-    public $referral_id = null;                 // MongoId of referral
+    public $referral_id = null;                 // MongoId of referral model
+    public $referral_user_id;                   // user_id of the referral
     public $referral_name = null;                 
     
     public $issued = false;                     // bool, has this been issued
@@ -43,6 +44,12 @@ class Commissions extends \Dsc\Mongo\Collections\Nodes
         {
             $this->setCondition('affiliate_id', new \MongoId( (string) $filter_user_id ) );
         }
+        
+        $filter_referral_id = $this->getState('filter.referral_id');
+        if (strlen($filter_referral_id))
+        {
+            $this->setCondition('referral_id', new \MongoId( (string) $filter_referral_id ) );
+        }        
     }
     
     public function validate()
@@ -289,4 +296,33 @@ class Commissions extends \Dsc\Mongo\Collections\Nodes
     
         return $this;
     }
+    
+    /**
+     * Gets the associated referral object
+     *
+     * @return unknown
+     */
+    public function referralRecord()
+    {
+        $item = (new \Affiliates\Models\Referrals)->load(array('_id'=>$this->referral_id));
+    
+        return $item;
+    }
+    
+    /**
+     * Gets the referral's user object
+     *
+     * @return unknown
+     */
+    public function referral()
+    {
+        if (empty($this->referral_user_id))
+        {
+            return new \Users\Models\Users;
+        }
+    
+        $user = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$this->referral_user_id)));
+    
+        return $user;
+    }    
 }

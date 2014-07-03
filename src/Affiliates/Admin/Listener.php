@@ -27,11 +27,13 @@ class Listener extends \Prefab
                     'route' => './admin/affiliates',
                     'icon' => 'fa fa-share-alt'
                 ),
+                /*
                 array(
                     'title' => 'Campaigns',
                     'route' => './admin/affiliates/campaigns',
                     'icon' => 'fa fa-bullhorn'
                 ),
+                */
                 array(
                     'title' => 'Referrals',
                     'route' => './admin/affiliates/referrals',

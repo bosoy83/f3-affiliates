@@ -1,7 +1,7 @@
 <?php 
 namespace Affiliates\Admin\Controllers;
 
-class Campaigns extends \Dsc\Controller 
+class Campaigns extends \Admin\Controllers\BaseAuth 
 {
     use \Dsc\Traits\Controllers\AdminList;
     

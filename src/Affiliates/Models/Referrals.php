@@ -4,11 +4,17 @@ namespace Affiliates\Models;
 class Referrals extends \Dsc\Mongo\Collections\Nodes
 {
     public $invite_id;
-    public $affiliate_id;
-    public $affiliate_email;
-    public $referral_user_id;        // user_id of the referral 
-    public $referral_email;
-    public $referral_name;          // used in the email to the affiliate that thanks them for the referral
+    public $affiliate_id;                       // the user_id of the affiliate
+    public $affiliate_email;                    // the email of the affiliate
+    public $affiliate_fingerprints = array();   // array of browser fingerprints for this affiliate_id
+    
+    public $referral_user_id;                   // user_id of the referral 
+    public $referral_email;                     // the email of the referral user
+    public $referral_name;                      // used in the email to the affiliate that thanks them for the referral
+    public $referral_fingerprints = array();    // array of browser fingerprints for this referral_user_id
+    
+    public $admin_status = null;
+    public $admin_status_messages = array();
     
     protected $__collection_name = 'affiliates.referrals';
 
@@ -95,13 +101,27 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             {
                 try
                 {
-                    (new static)->bind(array(
-                        'referral_user_id' => $identity->id,
-                        'referral_name' => $identity->fullName(),
-                        'referral_email' => $identity->email,
-                        'affiliate_id' => $request_affiliate_id
-                    ))->set('__send_email', true)->save();
+                    // is this a valid affiliate?
+                    $affiliate = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$request_affiliate_id)));
+                    if (!empty($affiliate->id))
+                    {
+                        // make them into a referral
+                        $referral = new static;
+                        $referral->bind(array(
+                            'referral_user_id' => $identity->id,
+                            'referral_name' => $identity->fullName(),
+                            'referral_email' => $identity->email,
+                            'referral_fingerprints' => (array) $identity->{'affiliates.fingerprints'},
+                            'affiliate_fingerprints' => (array) $affiliate->{'affiliates.fingerprints'},
+                            'affiliate_id' => $request_affiliate_id
+                        ))->save();
                     
+                        \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
+                            'title' => 'Verify and create commission for referral: ' . $referral->referral_email
+                        ));
+                    }
+                    
+                    // either way, clear the cookie
                     $app->clear('COOKIE.affiliate_id');
                     $app->set('COOKIE.affiliate_id', null, -1);
                 }
@@ -130,15 +150,34 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             // \Dsc\System::addMessage('Making you into a referral for an Affiliate ID');
             try
             {
-                (new static)->bind(array(
-                    'referral_user_id' => $identity->id,
-                    'referral_name' => $identity->fullName(),
-                    'referral_email' => $identity->email,
-                    'affiliate_id' => $cookie_affiliate_id
-                ))->set('__send_email', true)->save();
+                $referral = static::isUser($identity->id);
+                if (empty($referral->id))
+                {
+                    // is this a valid affiliate?
+                    $affiliate = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$cookie_affiliate_id)));
+                    if (!empty($affiliate->id))
+                    {
+                        // make them into a referral
+                        $referral = new static;
+                        $referral->bind(array(
+                            'referral_user_id' => $identity->id,
+                            'referral_name' => $identity->fullName(),
+                            'referral_email' => $identity->email,
+                            'referral_fingerprints' => (array) $identity->{'affiliates.fingerprints'},
+                            'affiliate_fingerprints' => (array) $affiliate->{'affiliates.fingerprints'},
+                            'affiliate_id' => $cookie_affiliate_id
+                        ))->save();
+                        
+                        \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
+                            'title' => 'Verify and create commission for referral: ' . $referral->referral_email
+                        ));
+                    }
+                }
                 
+                // either way, clear the cookie
                 $app->clear('COOKIE.affiliate_id');
                 $app->set('COOKIE.affiliate_id', null, -1);
+
             }
             catch (\Exception $e)
             {
@@ -196,14 +235,31 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                 {
                     if ($invite = \Affiliates\Models\Invites::idValid($request_invite_id)) 
                     {
-                        (new static)->bind(array(
-                            'referral_user_id' => $identity->id,
-                            'referral_name' => $identity->fullName(),
-                            'referral_email' => $invite->recipient_email,
-                            'invite_id' => $request_invite_id,
-                            'affiliate_id' => $invite->affiliate_id,
-                            'affiliate_email' => $invite->sender_email,                            
-                        ))->set('__send_email', true)->save();
+                        $affiliate = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$invite->affiliate_id)));
+                        if (!empty($affiliate->id))
+                        {
+                            // make them into a referral
+                            $referral = new static;
+                            $referral->bind(array(
+                                'referral_user_id' => $identity->id,
+                                'referral_name' => $identity->fullName(),
+                                'referral_email' => $invite->recipient_email,
+                                'referral_fingerprints' => (array) $identity->{'affiliates.fingerprints'},
+                                'affiliate_fingerprints' => (array) $affiliate->{'affiliates.fingerprints'},
+                                'affiliate_id' => $invite->affiliate_id,
+                                'affiliate_email' => $affiliate->email,
+                                'invite_id' => $request_invite_id,
+                            ))->save();
+                            
+                            \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
+                                'title' => 'Verify and create commission for referral: ' . $referral->referral_email
+                            ));
+                            
+                        }                        
+                                                
+                        // either way, clear the cookie
+                        $app->clear('COOKIE.affiliate_id');
+                        $app->set('COOKIE.affiliate_id', null, -1);
                     }
     
                     $app->clear('COOKIE.invite_id');
@@ -233,14 +289,30 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             {
                 if ($invite = \Affiliates\Models\Invites::idValid($cookie_invite_id))
                 {
-                    (new static)->bind(array(
-                        'referral_user_id' => $identity->id,
-                        'referral_name' => $identity->fullName(),
-                        'referral_email' => $invite->recipient_email,
-                        'invite_id' => $cookie_invite_id,
-                        'affiliate_id' => $invite->affiliate_id,
-                        'affiliate_email' => $invite->sender_email,
-                    ))->set('__send_email', true)->save();
+                    $affiliate = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$invite->affiliate_id)));
+                    if (!empty($affiliate->id))
+                    {
+                        // make them into a referral
+                        $referral = new static;
+                        $referral->bind(array(
+                            'referral_user_id' => $identity->id,
+                            'referral_name' => $identity->fullName(),
+                            'referral_email' => $invite->recipient_email,
+                            'referral_fingerprints' => (array) $identity->{'affiliates.fingerprints'},
+                            'affiliate_fingerprints' => (array) $affiliate->{'affiliates.fingerprints'},
+                            'affiliate_id' => $invite->affiliate_id,
+                            'affiliate_email' => $affiliate->email,
+                            'invite_id' => $cookie_invite_id,
+                        ))->save();
+                    
+                        \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
+                            'title' => 'Verify and create commission for referral: ' . $referral->referral_email
+                        ));                    
+                    }
+                    
+                    // either way, clear the cookie
+                    $app->clear('COOKIE.affiliate_id');
+                    $app->set('COOKIE.affiliate_id', null, -1);
                 }
     
                 $app->clear('COOKIE.invite_id');
@@ -349,11 +421,22 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         {
             $this->referral_name = $referral->fullName();
         }        
-                
-        if (static::isUser($this->referral_user_id)) 
+
+        $referral = static::isUser($this->referral_user_id);
+        if (!empty($referral->id) && $referral->id != $this->id) 
         {
         	$this->setError('Only one referral per user');
         }
+        
+        // TODO Validate the referral before creating the commission
+        // 1. Has the user referred themselves?
+            // compare the referral's browser's fingerprint to the affiliate's browser's fingerprint
+            
+        // compare affiliate_id and referral_user_id
+        if ($this->referral_user_id == $this->affiliate_id)
+        {
+            $this->setError('Cannot refer yourself');
+        }        
         
         return parent::validate();
     }
@@ -373,30 +456,70 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         return parent::beforeCreate();
     }
     
-    protected function afterCreate()
+    /**
+     * Static proxy for $this->verifyAndCreateCommission
+     * 
+     * @param unknown $id
+     * @return boolean
+     */
+    public static function createCommission( $id ) 
     {
-        // create the commission
-        $this->createReferralCommission();
-        
-        // Update invite if invite_id exists.  Mark it as converted.
-        if (!empty($this->invite_id)) 
+        $referral = (new static)->setState('filter.id', $id)->getItem();
+        if (!empty($referral->id)) 
         {
-            $invite = (new \Affiliates\Models\Invites)->setState('filter.id', $this->invite_id)->getItem();
-            if (!empty($invite->id))
+            return $referral->verifyAndCreateCommission();
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Verify that a commission should be created for this referral
+     * 
+     * @return boolean
+     */
+    public function verifyAndCreateCommission()
+    {
+        $status = false;
+        
+        // Validate the referral before creating the commission
+        // compare the referral's browser's fingerprint to the affiliate's browser's fingerprint
+        $same_browser = array_intersect($this->referral_fingerprints, $this->affiliate_fingerprints);
+        
+        if (empty($same_browser)) 
+        {
+            // create the commission
+            $this->createReferralCommission();
+            
+            // Update invite if invite_id exists.  Mark it as converted.
+            if (!empty($this->invite_id))
             {
-                $invite->status = 'joined';
-                $invite->save();
+                $invite = (new \Affiliates\Models\Invites)->setState('filter.id', $this->invite_id)->getItem();
+                if (!empty($invite->id))
+                {
+                    $invite->status = 'joined';
+                    $invite->save();
+                }
             }
+            
+            if (!empty($this->affiliate_email))
+            {
+                $this->sendEmailNewReferral();
+            }
+            
+            $this->calcAffiliateTotals( $this->affiliate_id );
+            
+            $status = true;
         }
         
-        if (!empty($this->affiliate_email))
+        else 
         {
-            $this->sendEmailNewReferral();
+            $this->admin_status = 'suspicious_browser';
+            $this->admin_status_messages[] = "One of this referral's browser fingerprints matches one of the affiliate's browser fingerprints.";
+            $this->save();
         }
         
-        $this->calcAffiliateTotals( $this->affiliate_id );
-        
-        parent::afterCreate();
+        return $status;
     }
     
     protected function afterDelete()
@@ -484,6 +607,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             		'affiliate_id' => $this->affiliate_id,
             	    'affiliate_name' => $this->affiliate()->fullName(),
             	    'referral_id' => $this->id,
+            	    'referral_user_id' => $this->referral_user_id,
             	    'referral_name' => $this->referral()->fullName(),
             	    'type' => \Affiliates\Models\Commissions::TYPE_REFERRAL
             	))->set('__issue', $auto_issue)->save();
@@ -559,5 +683,55 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
     public function createConversionCommission( $shop_order_number, $shop_order_amount )
     {
     	return $this;
+    }
+    
+    /**
+     * Gets the referral's commission object
+     *
+     * @return unknown
+     */
+    public function commission()
+    {
+        $item = (new \Affiliates\Models\Commissions)->setState('filter.referral_id', $this->id)->getItem();
+        
+        if (!empty($item->id)) {
+            return $item;
+        }
+
+        return false;
+    }
+    
+    public static function checkFingerprints( $affiliate_id )
+    {
+        // loop through all of an affilaite's referrals, and check whether or not their is browser fingerprint duplication
+        // if so, flag it
+        if ($referrals = \Affiliates\Models\Referrals::collection()->find(array('affiliate_id' => new \MongoId( (string) $affiliate_id ) ))) 
+        {
+            foreach ($referrals as $referral_doc) 
+            {
+                if (empty($referral_doc['admin_status'])) 
+                {
+                    $referral = new static($referral_doc);
+                    
+                    $same_browser = array_intersect($referral->referral_fingerprints, $referral->affiliate_fingerprints);
+                    if (!empty($same_browser))
+                    {
+                        if ($referral->commission()) 
+                        {
+                            $referral->admin_status = 'suspicious_browser_commission_issued';
+                        }
+                        else 
+                        {
+                            $referral->admin_status = 'suspicious_browser';
+                        }
+                        
+                        $referral->admin_status_messages[] = "One of this referral's browser fingerprints matches one of the affiliate's browser fingerprints.";
+                        $referral->save();
+                    }                    
+                }
+            } 
+        }
+        
+        
     }
 }

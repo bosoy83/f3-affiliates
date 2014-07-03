@@ -64,5 +64,10 @@ class Routes extends \Dsc\Routes\Group
             'controller' => 'Invites',
             'action' => 'index'
         ) );
+        
+        $this->add( '/fp/@id [ajax]', 'GET|POST', array(
+            'controller' => 'Fingerprint',
+            'action' => 'index'
+        ) );        
     }
 }

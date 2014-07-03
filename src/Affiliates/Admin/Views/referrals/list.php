@@ -93,12 +93,15 @@
                             <div class="col-sm-2">
                                 <b>Date</b>
                             </div>
-                            <div class="col-sm-7">
+                            <div class="col-sm-3">
                                 <b>Referral</b>
                             </div>
                             <div class="col-sm-3">
                                 <b>Affiliate</b>
                             </div>
+                            <div class="col-sm-3">
+                                <b>Status</b>
+                            </div>                            
                         </div>
                     </li>
                     
@@ -108,7 +111,7 @@
                             <div class="col-sm-2">
                                 <?php echo date('Y-m-d g:ia', $item->{'metadata.created.time'} ); ?>
                             </div>
-                            <div class="col-sm-7">
+                            <div class="col-sm-3">
                                 <h5>
                                     <?php echo $item->{'referral_name'}; ?>
                                     <small><?php echo $item->referral_email; ?></small>
@@ -117,6 +120,16 @@
                             <div class="col-sm-3">
                                 <?php echo $item->affiliate_email; ?>
                             </div>
+                            <div class="col-sm-3">
+                                <?php if (!empty($item->admin_status)) { ?>
+                                    <span class="label label-danger"><?php echo $item->admin_status; ?></span>
+                                    <?php foreach ($item->admin_status_messages as $message) { ?>
+                                        <p class="help-block"><?php echo $message; ?></p>
+                                    <?php } ?>
+                                <?php } else { ?>
+                                    <span class="label label-success">OK</span>
+                                <?php } ?>
+                            </div>                            
                         </div>
                     </li>
                 <?php } ?>

@@ -1,7 +1,7 @@
 <?php 
 namespace Affiliates\Admin\Controllers;
 
-class Dashboard extends \Dsc\Controller 
+class Dashboard extends \Admin\Controllers\BaseAuth 
 {
     public function index()
     {
