@@ -22,11 +22,13 @@ class Listener extends \Prefab
             ));
             
             $children = array(
+                /*
                 array(
                     'title' => 'Dashboard',
                     'route' => './admin/affiliates',
                     'icon' => 'fa fa-share-alt'
                 ),
+                */
                 /*
                 array(
                     'title' => 'Campaigns',
