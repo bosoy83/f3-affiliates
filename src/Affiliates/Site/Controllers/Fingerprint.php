@@ -43,7 +43,7 @@ class Fingerprint extends \Dsc\Controller
                         $referral->referral_fingerprints = $fingerprints;
                         try
                         {
-                            $referral->save();
+                            $referral->verifyFingerprint()->save();
                         }
                         catch (\Exception $e)
                         {

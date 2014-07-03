@@ -731,7 +731,37 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                 }
             } 
         }
+    }
+    
+    public static function checkFingerprint( $referral_id ) 
+    {
+        $referral = (new static)->setState('filter.id', $referral_id)->getItem();
         
+        if (!empty($referral->id)) 
+        {
+            return $referral->verifyFingerprint()->save();
+        }
         
+        return false;
+    }
+    
+    public function verifyFingerprint()
+    {
+        $same_browser = array_intersect($this->referral_fingerprints, $this->affiliate_fingerprints);
+        if (!empty($same_browser))
+        {
+            if ($this->commission())
+            {
+                $this->admin_status = 'suspicious_browser_commission_issued';
+            }
+            else
+            {
+                $this->admin_status = 'suspicious_browser';
+            }
+        
+            $this->admin_status_messages[] = "One of this referral's browser fingerprints matches one of the affiliate's browser fingerprints.";
+        }
+        
+        return $this;        
     }
 }
