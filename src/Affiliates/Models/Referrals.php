@@ -116,13 +116,12 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                             'affiliate_id' => $request_affiliate_id
                         ))->save();
                         
-                        \Affiliates\Models\Referrals::createCommission($referral->id);
-                        
                         /*                    
+                        \Affiliates\Models\Referrals::createCommission($referral->id);
+                        */
                         \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
                             'title' => 'Verify and create commission for referral: ' . $referral->referral_email
-                        ));
-                        */
+                        ));                        
                     }
                     
                     // either way, clear the cookie
@@ -172,13 +171,12 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                             'affiliate_id' => $cookie_affiliate_id
                         ))->save();
                         
-                        \Affiliates\Models\Referrals::createCommission($referral->id);
-                        
                         /*
+                        \Affiliates\Models\Referrals::createCommission($referral->id);
+                        */
                         \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
                             'title' => 'Verify and create commission for referral: ' . $referral->referral_email
-                        ));
-                        */
+                        ));                        
                     }
                 }
                 
@@ -259,13 +257,12 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                                 'invite_id' => $request_invite_id,
                             ))->save();
                             
-                            \Affiliates\Models\Referrals::createCommission($referral->id);
-                            
                             /*
+                            \Affiliates\Models\Referrals::createCommission($referral->id);
+                            */
                             \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
                                 'title' => 'Verify and create commission for referral: ' . $referral->referral_email
-                            ));
-                            */
+                            ));                            
                             
                         }                        
                                                 
@@ -317,13 +314,13 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                             'invite_id' => $cookie_invite_id,
                         ))->save();
                     
-                        \Affiliates\Models\Referrals::createCommission($referral->id);
-                        
                         /*
+                        \Affiliates\Models\Referrals::createCommission($referral->id);
+                        */
                         \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
                             'title' => 'Verify and create commission for referral: ' . $referral->referral_email
                         ));
-                        */                    
+                        
                     }
                     
                     // either way, clear the cookie
