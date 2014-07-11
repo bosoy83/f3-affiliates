@@ -24,5 +24,16 @@ class Routes extends \Dsc\Routes\Group
         
         $this->addCrudGroup( 'Referrals', 'Referral' );
         $this->addCrudGroup( 'Commissions', 'Commission' );
+        
+        $this->add('/commission/issue/@id', 'GET', array(
+            'controller' => 'Commission',
+            'action' => 'issue'
+        ));
+        
+        $this->add('/commission/revoke/@id', 'GET', array(
+            'controller' => 'Commission',
+            'action' => 'revoke'
+        ));
+        
     }
 }

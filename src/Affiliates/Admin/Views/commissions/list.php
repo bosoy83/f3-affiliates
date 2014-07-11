@@ -109,18 +109,26 @@
                     <li class="list-group-item" data-id="<?php echo $item->id; ?>">
                         <div class="row">
                             <div class="col-sm-2">
-                                <?php echo date('Y-m-d g:ia', $item->{'metadata.created.time'} ); ?>
+                                <h5>
+                                    <a href="./admin/affiliates/commission/read/<?php echo $item->id; ?>">
+                                    <?php echo date('Y-m-d g:ia', $item->{'metadata.created.time'} ); ?>
+                                    </a>
+                                </h5>
                             </div>
                             <div class="col-sm-6">
                                 <h5>
+                                    <a href="./admin/affiliates/commission/read/<?php echo $item->id; ?>">
                                     <?php echo $item->affiliate_name; ?>
+                                    </a>
                                 </h5>
                             </div>
                             <div class="col-sm-2">
-                                <?php echo $item->amount; ?>
+                                <h5>
+                                    <?php echo \Shop\Models\Currency::format( $item->amount ); ?>
+                                </h5>
                             </div>
                             <div class="col-sm-2">
-                                <?php echo $item->issued ? 'Issued' : 'Pending'; ?>
+                                <span class="label-lg label <?php echo $item->issued ? 'label-success' : 'label-warning'; ?>"><?php echo $item->issued ? 'Issued' : 'Not Issued'; ?></span>
                             </div>
                         </div>
                     </li>
