@@ -86,6 +86,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             if (empty($identity->id))
             {
                 $app->set('COOKIE.affiliate_id', $request_affiliate_id, 2592000); // == 30 days == (86400*30)
+                return true;
             }
             
             // if the user IS logged in and is already a referral, just clear any cookies
@@ -93,48 +94,17 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             {
                 $app->clear('COOKIE.affiliate_id');
                 $app->set('COOKIE.affiliate_id', null, -1);
+                return false;
             }
             
-            // If the user IS logged in and is not a referral, make them into a referral for affiliate_id
-            // and kill any cookies
+            // If the user IS logged in and is not a referral, 
+            // then they were already registered, so they don't create a referral credit
+            // so kill any cookies
             else
             {
-                try
-                {
-                    // is this a valid affiliate?
-                    $affiliate = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$request_affiliate_id)));
-                    if (!empty($affiliate->id))
-                    {
-                        // make them into a referral
-                        $referral = new static;
-                        $referral->bind(array(
-                            'referral_user_id' => $identity->id,
-                            'referral_name' => $identity->fullName(),
-                            'referral_email' => $identity->email,
-                            'referral_fingerprints' => (array) $identity->{'affiliates.fingerprints'},
-                            'affiliate_fingerprints' => (array) $affiliate->{'affiliates.fingerprints'},
-                            'affiliate_id' => $request_affiliate_id
-                        ))->save();
-                        
-                        /*                    
-                        \Affiliates\Models\Referrals::createCommission($referral->id);
-                        */
-                        \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
-                            'title' => 'Verify and create commission for referral: ' . $referral->referral_email
-                        ));                        
-                    }
-                    
-                    // either way, clear the cookie
-                    $app->clear('COOKIE.affiliate_id');
-                    $app->set('COOKIE.affiliate_id', null, -1);
-                }
-                catch (\Exception $e)
-                {
-                    // TODO Log the failure in the system logger
-                    $app->clear('COOKIE.affiliate_id');
-                    $app->set('COOKIE.affiliate_id', null, -1);
-                    return false;
-                }
+                $app->clear('COOKIE.affiliate_id');
+                $app->set('COOKIE.affiliate_id', null, -1);
+                return false;
             }
         }
         
@@ -144,54 +114,15 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             // Extend the life of the cookie
             // \Dsc\System::addMessage('Extending the life of the cookie for the Affiliate ID');
             $app->set('COOKIE.affiliate_id', $cookie_affiliate_id, 2592000); // == 30 days == (86400*30)
+            return true;
         }
         
         // or is there an affiliate ID in a cookie and the user IS logged in
         elseif (!empty($identity->id) && !empty($cookie_affiliate_id))
         {
-            // Make the user into a referral for affiliate_id and kill the cookie
-            // \Dsc\System::addMessage('Making you into a referral for an Affiliate ID');
-            try
-            {
-                $referral = static::isUser($identity->id);
-                if (empty($referral->id))
-                {
-                    // is this a valid affiliate?
-                    $affiliate = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$cookie_affiliate_id)));
-                    if (!empty($affiliate->id))
-                    {
-                        // make them into a referral
-                        $referral = new static;
-                        $referral->bind(array(
-                            'referral_user_id' => $identity->id,
-                            'referral_name' => $identity->fullName(),
-                            'referral_email' => $identity->email,
-                            'referral_fingerprints' => (array) $identity->{'affiliates.fingerprints'},
-                            'affiliate_fingerprints' => (array) $affiliate->{'affiliates.fingerprints'},
-                            'affiliate_id' => $cookie_affiliate_id
-                        ))->save();
-                        
-                        /*
-                        \Affiliates\Models\Referrals::createCommission($referral->id);
-                        */
-                        \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
-                            'title' => 'Verify and create commission for referral: ' . $referral->referral_email
-                        ));                        
-                    }
-                }
-                
-                // either way, clear the cookie
-                $app->clear('COOKIE.affiliate_id');
-                $app->set('COOKIE.affiliate_id', null, -1);
-
-            }
-            catch (\Exception $e)
-            {
-                // TODO Log the failure in the system logger
-                $app->clear('COOKIE.affiliate_id');
-                $app->set('COOKIE.affiliate_id', null, -1);                
-                return false;
-            }
+            $app->clear('COOKIE.affiliate_id');
+            $app->set('COOKIE.affiliate_id', null, -1);
+            return false;
         }
 
         $app->clear('COOKIE.affiliate_id');
@@ -224,6 +155,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                 if (\Affiliates\Models\Invites::idValid($request_invite_id)) 
                 {
                     $app->set('COOKIE.invite_id', $request_invite_id, 2592000); // == 30 days == (86400*30)
+                    return true;
                 }                
             }
     
@@ -231,53 +163,16 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             elseif (static::isUser($identity->id))
             {
                 $app->clear('COOKIE.invite_id');
+                return false;
             }
     
-            // If the user IS logged in and is not a referral, make them into a referral for invite_id
-            // and kill any cookies
+            // If the user IS logged in and is not a referral,
+            // then they were already registered, so they don't create a referral credit 
+            // so kill any cookies
             else
             {
-                try
-                {
-                    if ($invite = \Affiliates\Models\Invites::idValid($request_invite_id)) 
-                    {
-                        $affiliate = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$invite->affiliate_id)));
-                        if (!empty($affiliate->id))
-                        {
-                            // make them into a referral
-                            $referral = new static;
-                            $referral->bind(array(
-                                'referral_user_id' => $identity->id,
-                                'referral_name' => $identity->fullName(),
-                                'referral_email' => $invite->recipient_email,
-                                'referral_fingerprints' => (array) $identity->{'affiliates.fingerprints'},
-                                'affiliate_fingerprints' => (array) $affiliate->{'affiliates.fingerprints'},
-                                'affiliate_id' => $invite->affiliate_id,
-                                'affiliate_email' => $affiliate->email,
-                                'invite_id' => $request_invite_id,
-                            ))->save();
-                            
-                            /*
-                            \Affiliates\Models\Referrals::createCommission($referral->id);
-                            */
-                            \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
-                                'title' => 'Verify and create commission for referral: ' . $referral->referral_email
-                            ));                            
-                            
-                        }                        
-                                                
-                        // either way, clear the cookie
-                        $app->clear('COOKIE.affiliate_id');
-                        $app->set('COOKIE.affiliate_id', null, -1);
-                    }
-    
-                    $app->clear('COOKIE.invite_id');
-                }
-                catch (\Exception $e)
-                {
-                    // TODO Log the failure in the system logger
-                    return false;
-                }
+                $app->clear('COOKIE.invite_id');
+                return false;
             }
         }
     
@@ -287,55 +182,19 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             // Extend the life of the cookie
             // \Dsc\System::addMessage('Extending the life of the cookie of the Invite ID');
             $app->set('COOKIE.invite_id', $cookie_invite_id, 2592000); // == 30 days == (86400*30)
+            return true;
         }
     
         // or is there an affiliate ID in a cookie and the user IS logged in
+        // the Users Listener should have already handled the referral creation,
+        // so just kill the cookie
         elseif (!empty($identity->id) && !empty($cookie_invite_id))
         {
-            // Make the user into a referral for invite_id and kill the cookie
-            // \Dsc\System::addMessage('Making you into a referral for an Invite ID');
-            try
-            {
-                if ($invite = \Affiliates\Models\Invites::idValid($cookie_invite_id))
-                {
-                    $affiliate = (new \Users\Models\Users)->load(array('_id'=> new \MongoId((string)$invite->affiliate_id)));
-                    if (!empty($affiliate->id))
-                    {
-                        // make them into a referral
-                        $referral = new static;
-                        $referral->bind(array(
-                            'referral_user_id' => $identity->id,
-                            'referral_name' => $identity->fullName(),
-                            'referral_email' => $invite->recipient_email,
-                            'referral_fingerprints' => (array) $identity->{'affiliates.fingerprints'},
-                            'affiliate_fingerprints' => (array) $affiliate->{'affiliates.fingerprints'},
-                            'affiliate_id' => $invite->affiliate_id,
-                            'affiliate_email' => $affiliate->email,
-                            'invite_id' => $cookie_invite_id,
-                        ))->save();
-                    
-                        /*
-                        \Affiliates\Models\Referrals::createCommission($referral->id);
-                        */
-                        \Dsc\Queue::task('\Affiliates\Models\Referrals::createCommission', array('id'=>$referral->id), array(
-                            'title' => 'Verify and create commission for referral: ' . $referral->referral_email
-                        ));
-                        
-                    }
-                    
-                    // either way, clear the cookie
-                    $app->clear('COOKIE.affiliate_id');
-                    $app->set('COOKIE.affiliate_id', null, -1);
-                }
-    
-                $app->clear('COOKIE.invite_id');
-            }
-            catch (\Exception $e)
-            {
-                // TODO Log the failure in the system logger
-                return false;
-            }
+            $app->clear('COOKIE.invite_id');
+            return false;
         }
+        
+        $app->clear('COOKIE.invite_id');
     
         return true;
     }

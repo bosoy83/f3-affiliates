@@ -27,6 +27,7 @@ class AffiliatesBootstrap extends \Dsc\Bootstrap
         parent::preSite();
         
         \Dsc\System::instance()->getDispatcher()->addListener(\Affiliates\Listeners\Shop::instance());
+        \Dsc\System::instance()->getDispatcher()->addListener(\Affiliates\Listeners\Users::instance());
         
         if (class_exists('\Minify\Factory'))
         {
