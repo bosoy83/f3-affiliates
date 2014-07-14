@@ -64,7 +64,7 @@ class Users extends \Dsc\Singleton
                 // \Dsc\System::addMessage('Making you into a referral for an Affiliate ID');
                 try
                 {
-                    $referral = static::isUser($identity->id);
+                    $referral = \Affiliates\Models\Referrals::isUser($identity->id);
                     if (empty($referral->id))
                     {
                         // is this a valid affiliate?
