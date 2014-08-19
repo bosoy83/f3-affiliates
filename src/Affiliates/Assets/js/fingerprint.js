@@ -279,5 +279,5 @@
 
 jQuery(document).ready(function(){
 	var fingerprint = new Fingerprint().get();
-	jQuery.ajax('./affiliate/fp/'+fingerprint);
+	jQuery.ajax('./affiliate/fp/'+fingerprint+'?ping=1');
 });
