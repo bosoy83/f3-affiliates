@@ -8,8 +8,8 @@ class Users extends \Dsc\Singleton
         $user = $event->getArgument('model');
         
         $app = \Base::instance();
-        $cookie_affiliate_id = $app->get('COOKIE.affiliate_id');
-        $cookie_invite_id = $app->get('COOKIE.invite_id');
+        $cookie_affiliate_id = \Dsc\Cookie::get('affiliate_id');
+        $cookie_invite_id = \Dsc\Cookie::get('invite_id');
         // TODO Also check the session
         
         // If there is an affiliate_id in a cookie or the session,
