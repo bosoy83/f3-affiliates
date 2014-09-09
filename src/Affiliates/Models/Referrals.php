@@ -76,7 +76,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         $app = \Base::instance();
         $identity = \Dsc\System::instance()->get('auth')->getIdentity();
         $request_affiliate_id = \Dsc\System::instance()->get('input')->get('affiliate_id');
-        $cookie_affiliate_id = $app->get('COOKIE.affiliate_id');
+        $cookie_affiliate_id = \Dsc\Cookie::get('affiliate_id');
         
         // is there an affiliate ID in the request?
         if (!empty($request_affiliate_id))
@@ -85,15 +85,14 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             // If the user is not logged in, set a cookie.
             if (empty($identity->id))
             {
-                $app->set('COOKIE.affiliate_id', $request_affiliate_id, 2592000); // == 30 days == (86400*30)
+                \Dsc\Cookie::set('affiliate_id', $request_affiliate_id, 2592000/60); // == 30 days == (86400*30)
                 return true;
             }
             
             // if the user IS logged in and is already a referral, just clear any cookies
             elseif (static::isUser($identity->id)) 
             {
-                $app->clear('COOKIE.affiliate_id');
-                $app->set('COOKIE.affiliate_id', null, -1);
+                \Dsc\Cookie::forget('affiliate_id');
                 return false;
             }
             
@@ -102,8 +101,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             // so kill any cookies
             else
             {
-                $app->clear('COOKIE.affiliate_id');
-                $app->set('COOKIE.affiliate_id', null, -1);
+                \Dsc\Cookie::forget('affiliate_id');
                 return false;
             }
         }
@@ -113,20 +111,18 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         {
             // Extend the life of the cookie
             // \Dsc\System::addMessage('Extending the life of the cookie for the Affiliate ID');
-            $app->set('COOKIE.affiliate_id', $cookie_affiliate_id, 2592000); // == 30 days == (86400*30)
+            \Dsc\Cookie::set('affiliate_id', $cookie_affiliate_id, 2592000/60); // == 30 days == (86400*30)
             return true;
         }
         
         // or is there an affiliate ID in a cookie and the user IS logged in
         elseif (!empty($identity->id) && !empty($cookie_affiliate_id))
         {
-            $app->clear('COOKIE.affiliate_id');
-            $app->set('COOKIE.affiliate_id', null, -1);
+            \Dsc\Cookie::forget('affiliate_id');
             return false;
         }
 
-        $app->clear('COOKIE.affiliate_id');
-        $app->set('COOKIE.affiliate_id', null, -1);
+        \Dsc\Cookie::forget('affiliate_id');
                 
         return true;
     }
@@ -142,7 +138,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         $app = \Base::instance();
         $identity = \Dsc\System::instance()->get('auth')->getIdentity();
         $request_invite_id = \Dsc\System::instance()->get('input')->get('invite_id');
-        $cookie_invite_id = $app->get('COOKIE.invite_id');
+        $cookie_invite_id = \Dsc\Cookie::get('invite_id');
     
         // is there an invite ID in the request?
         if (!empty($request_invite_id))
@@ -154,7 +150,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
                 // Validate the $request_invite_id
                 if (\Affiliates\Models\Invites::idValid($request_invite_id)) 
                 {
-                    $app->set('COOKIE.invite_id', $request_invite_id, 2592000); // == 30 days == (86400*30)
+                    \Dsc\Cookie::set('invite_id', $request_invite_id, 2592000/60); // == 30 days == (86400*30)
                     return true;
                 }                
             }
@@ -162,7 +158,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             // if the user IS logged in and is already a referral, just clear any cookies
             elseif (static::isUser($identity->id))
             {
-                $app->clear('COOKIE.invite_id');
+                \Dsc\Cookie::forget('invite_id');
                 return false;
             }
     
@@ -171,7 +167,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
             // so kill any cookies
             else
             {
-                $app->clear('COOKIE.invite_id');
+                \Dsc\Cookie::forget('invite_id');
                 return false;
             }
         }
@@ -181,7 +177,7 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         {
             // Extend the life of the cookie
             // \Dsc\System::addMessage('Extending the life of the cookie of the Invite ID');
-            $app->set('COOKIE.invite_id', $cookie_invite_id, 2592000); // == 30 days == (86400*30)
+            \Dsc\Cookie::set('invite_id', $cookie_invite_id, 2592000/60); // == 30 days == (86400*30)
             return true;
         }
     
@@ -190,11 +186,11 @@ class Referrals extends \Dsc\Mongo\Collections\Nodes
         // so just kill the cookie
         elseif (!empty($identity->id) && !empty($cookie_invite_id))
         {
-            $app->clear('COOKIE.invite_id');
+            \Dsc\Cookie::forget('invite_id');
             return false;
         }
         
-        $app->clear('COOKIE.invite_id');
+        \Dsc\Cookie::forget('invite_id');
     
         return true;
     }
